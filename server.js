@@ -15,14 +15,12 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(fileUpload());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Connexion MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -30,13 +28,11 @@ mongoose.connect(process.env.MONGODB_URI, {
 .then(() => console.log("Connecté à MongoDB"))
 .catch(err => console.error("Erreur MongoDB :", err));
 
-// API publique pour les produits
 app.get('/api/products', async (req, res) => {
   const produits = await Product.find().sort({ createdAt: -1 });
   res.json(produits);
 });
 
-// Route d'admin pour ajouter un produit
 app.post('/api/admin/products', async (req, res) => {
   try {
     const { name, description, prices, password } = req.body;
@@ -65,7 +61,6 @@ app.post('/api/admin/products', async (req, res) => {
   }
 });
 
-// Démarrage du serveur
 app.listen(PORT, () => {
   console.log(`Serveur lancé sur le port ${PORT}`);
 });
